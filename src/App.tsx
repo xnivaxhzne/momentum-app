@@ -1,7 +1,12 @@
 import './App.css'
+import { Button } from '@/components/ui/button'
 
 function App() {
-  return <p className='bg-sky-700 px-4 font-extrabold text-amber-300 underline'>Hello</p>
+  return (
+    <div className='flex min-h-svh flex-col items-center justify-center'>
+      <Button>Click me</Button>
+    </div>
+  )
 }
 
 export default App
