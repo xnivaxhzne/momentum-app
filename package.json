@@ -48,5 +48,8 @@
   },
   "lint-staged": {
     "*": "eslint --fix"
+  },
+  "engines": {
+    "node": "22.17.1"
   }
 }
