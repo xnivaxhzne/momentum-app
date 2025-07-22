@@ -5,6 +5,9 @@ trailingComma: none
 tabWidth: 2
 semi: false
 
+plugins:
+  - 'prettier-plugin-tailwindcss'
+
 overrides:
   - files:
       - '*.css'
