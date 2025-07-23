@@ -2,7 +2,8 @@ import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
 import './App.css'
 import { supabase } from './lib/supabase-client'
-import { type PostgrestSingleResponse, type Session } from '@supabase/supabase-js'
+import { type PostgrestSingleResponse } from '@supabase/supabase-js'
+import { useAuthStore } from './stores/authStore'
 
 interface Tasks {
   id: number
@@ -11,7 +12,7 @@ interface Tasks {
 
 function App() {
   const [tasks, setTasks] = useState<Tasks[]>([])
-  const [session, setSession] = useState<Session | null>(null)
+  const { user, signIn, signOut, signUp } = useAuthStore()
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -25,14 +26,6 @@ function App() {
       }
     }
     fetchAll()
-
-    const { data: authStateChangeListner } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-
-    return () => {
-      authStateChangeListner?.subscription.unsubscribe()
-    }
   }, [])
 
   useEffect(() => {
@@ -86,10 +79,7 @@ function App() {
   }
 
   const handleSignUp = async () => {
-    await supabase.auth.signUp({
-      email: '',
-      password: ''
-    })
+    await signUp('', '')
   }
 
   const handleSignIn = async () => {
@@ -99,19 +89,16 @@ function App() {
       alert('Email and password are required')
       return
     }
-    await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
+    await signIn(email, password)
   }
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
+    await signOut()
   }
 
   return (
     <div className='flex min-h-svh flex-col items-center justify-center'>
-      {!session && (
+      {!user && (
         <>
           <Button className='bg-blue-500 text-white' onClick={handleSignUp}>
             Sign Up
@@ -121,9 +108,9 @@ function App() {
           </Button>
         </>
       )}
-      {session && (
+      {user && (
         <>
-          <p className='text-green-500'>Logged in as: {session.user.email}</p>
+          <p className='text-green-500'>Logged in as: {user.email}</p>
           <Button className='bg-red-500 text-white' onClick={handleSignOut}>
             Sign Out
           </Button>
